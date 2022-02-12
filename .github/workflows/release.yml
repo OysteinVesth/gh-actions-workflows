@@ -1,7 +1,9 @@
 name: Release
 
 on:
-  workflow_run: ['Build']
+  workflow_run: 
+    workflows: ['Build']
+    types: [ completed ]
 
 jobs:
   release:

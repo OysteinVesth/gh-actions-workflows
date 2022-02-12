@@ -13,6 +13,6 @@ jobs:
     - name: View context attributes
       uses: actions/github-script@v6
       with:
-        script: console.log(context)
+        script: console.log(JSON.stringify(context, undefined, 2))
 
         

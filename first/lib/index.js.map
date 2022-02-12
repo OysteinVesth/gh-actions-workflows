@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../index.ts"],
+  "sourcesContent": ["import * as core from '@actions/core'\r\nimport { context, getOctokit } from '@actions/github'\r\n\r\nconst owner = context.payload.repository.owner\r\nconst repo = context.payload.repository.name\r\nconst run_id = context.runId\r\n\r\nconst run = async () => {\r\n    const octokit = getOctokit(process.env.GITHUB_TOKEN)\r\n\r\n    console.log(core.getInput('title'))\r\n    console.log('THE CONTEXT')\r\n    console.log(JSON.stringify(context, undefined, 2))\r\n    console.log('')\r\n    console.log('=====================')\r\n    console.log('')\r\n}\r\n\r\nrun()"],
+  "mappings": "ohBAAA,MAAsB,4BACtB,EAAoC,2BAE9B,EAAQ,UAAQ,QAAQ,WAAW,MACnC,EAAO,UAAQ,QAAQ,WAAW,KAClC,EAAS,UAAQ,MAEjB,EAAM,SAAY,CACpB,GAAM,GAAU,iBAAW,QAAQ,IAAI,cAEvC,QAAQ,IAAI,AAAK,WAAS,UAC1B,QAAQ,IAAI,eACZ,QAAQ,IAAI,KAAK,UAAU,UAAS,OAAW,IAC/C,QAAQ,IAAI,IACZ,QAAQ,IAAI,yBACZ,QAAQ,IAAI,KAGhB",
+  "names": []
+}

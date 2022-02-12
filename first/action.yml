@@ -1,0 +1,9 @@
+name: 'Release Changelog'
+description: 'Creates changelog notes and adds them to a new GitHub Release based on tag'
+inputs:
+  title:
+    description: 'Title'
+    required: true
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

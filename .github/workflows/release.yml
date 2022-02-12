@@ -1,0 +1,13 @@
+name: Release
+
+on:
+  workflow_run: ['Build']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:        
+      - name: Release
+        uses: oysteinvesth/gh-actions-workflows/first@1
+        

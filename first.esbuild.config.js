@@ -1,8 +1,6 @@
 const esbuild = require('esbuild')
 
 // Automatically exclude all node_modules from the bundled version
-const { nodeExternalsPlugin } = require('esbuild-node-externals')
-
 esbuild.build({
   entryPoints: ['first/index.ts'],
   outfile: 'first/lib/index.js',
@@ -10,6 +8,5 @@ esbuild.build({
   minify: true,
   platform: 'node',
   sourcemap: true,
-  target: 'node14',
-  plugins: [nodeExternalsPlugin()]
+  target: 'node16',
 }).catch(() => process.exit(1))

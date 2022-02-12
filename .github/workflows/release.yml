@@ -11,5 +11,5 @@ jobs:
 
     steps:        
       - name: Release
-        uses: oysteinvesth/gh-actions-workflows/first@v1.1.0
+        uses: oysteinvesth/gh-actions-workflows/first@v1.3.0
         

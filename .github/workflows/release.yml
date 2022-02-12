@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:        
-      - name: Release
-        uses: oysteinvesth/gh-actions-workflows/first@v1.3.0
+    - name: View context attributes
+      uses: actions/github-script@v6
+      with:
+        script: console.log(context)
+
         

@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:        
-      - name: Build something
-        run: echo "I am building stuff"
-        
+      - name: View context attributes
+        uses: actions/github-script@v6
+        with:
+          script: console.log(JSON.stringify(context, undefined, 2))

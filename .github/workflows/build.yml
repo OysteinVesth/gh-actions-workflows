@@ -25,6 +25,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
+          DRY_RUN: true
           DEFAULT_BUMP: patch
           INITIAL_VERSION: v1.0.0
 

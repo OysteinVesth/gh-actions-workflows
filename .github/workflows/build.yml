@@ -31,7 +31,7 @@ jobs:
         DEFAULT_BUMP: patch
 
     - name: Version
-      run: npm --no-git-tag-version version ${{ steps.new_tag.outputs.part }}
+      run: npm ${{ steps.new_tag.outputs.part }}
 
     - name: Publish
       run: npm publish

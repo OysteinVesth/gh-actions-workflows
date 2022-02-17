@@ -13,3 +13,16 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: console.log(JSON.stringify(context, undefined, 2))
+
+      - name: Create next version
+        id: new_tag
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+          DRY_RUN: true
+          DEFAULT_BUMP: patch
+          RELEASE_BRANCHES: ${{ env.MAIN_BRANCH }}
+          PRERELEASE_SUFFIX: ${{ steps.branch_tag.outputs.suffix }}
+
+      - run: echo "${{ steps.new_tag.outputs.part }} ${{ steps.new_tag.outputs.new_tag }} ${{ steps.new_tag.outputs.tag }}"

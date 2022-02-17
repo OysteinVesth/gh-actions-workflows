@@ -2,13 +2,18 @@ name: Build
 
 on:
   push:
-  workflow_dispatch:
-
+    tags-ignore:
+      - '*'
+    branches: 
+      - '**'
 jobs:
   upload:
     runs-on: ubuntu-latest
 
-    steps:        
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
       - name: View context attributes
         uses: actions/github-script@v6
         with:

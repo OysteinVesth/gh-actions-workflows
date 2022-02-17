@@ -22,7 +22,6 @@ jobs:
           WITH_V: true
           DRY_RUN: true
           DEFAULT_BUMP: patch
-          RELEASE_BRANCHES: ${{ env.MAIN_BRANCH }}
-          PRERELEASE_SUFFIX: ${{ steps.branch_tag.outputs.suffix }}
+          INITIAL_VERSION: 1.0.0
 
       - run: echo "${{ steps.new_tag.outputs.part }} ${{ steps.new_tag.outputs.new_tag }} ${{ steps.new_tag.outputs.tag }}"

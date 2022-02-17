@@ -7,26 +7,45 @@ on:
     branches: 
       - '**'
 jobs:
-  upload:
+  build:
+    permissions:
+      packages: write
+      contents: read
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: '0'
-      - name: View context attributes
-        uses: actions/github-script@v6
-        with:
-          script: console.log(JSON.stringify(context, undefined, 2))
+    - uses: actions/checkout@v2
 
-      - name: Create next version
-        id: new_tag
-        uses: anothrNick/github-tag-action@1.36.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true
-          DRY_RUN: true
-          DEFAULT_BUMP: patch
-          INITIAL_VERSION: v1.0.0
+    - name: Setup
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+        registry-url: https://npm.pkg.github.com/
 
-      - run: echo "${{ steps.new_tag.outputs.part }} ${{ steps.new_tag.outputs.new_tag }} ${{ steps.new_tag.outputs.tag }}"
+    - name: Install
+      run: yarn --frozen-lockfile
+
+    - name: Build
+      run: yarn build
+
+    - name: Create next version
+      id: new_tag
+      uses: anothrNick/github-tag-action@1.36.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+        DRY_RUN: true
+        DEFAULT_BUMP: patch
+
+    - name: Version
+      run: npm --no-git-tag-version version ${{ steps.new_tag.outputs.part }}
+      env: 
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Publish
+      run: npm publish
+
+    - name: Push tag
+      uses: anothrNick/github-tag-action@1.36.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        CUSTOM_TAG: ${{ steps.new_tag.outputs.new_tag }}

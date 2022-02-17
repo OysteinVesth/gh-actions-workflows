@@ -32,11 +32,11 @@ jobs:
 
     - name: Version
       run: npm --no-git-tag-version version ${{ steps.new_tag.outputs.part }}
-      env: 
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Publish
       run: npm publish
+      env: 
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Push tag
       uses: anothrNick/github-tag-action@1.36.0

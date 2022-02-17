@@ -31,7 +31,10 @@ jobs:
         DEFAULT_BUMP: patch
 
     - name: Version
-      run: npm version ${{ steps.new_tag.outputs.part }}
+      run: |
+        git config --global user.name "Test"
+        git config --global user.email "test@gmail.com"
+        npm version ${{ steps.new_tag.outputs.part }}
 
     - name: Publish
       run: npm publish

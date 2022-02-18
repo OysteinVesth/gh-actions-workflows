@@ -29,6 +29,12 @@ jobs:
         WITH_V: true
         DRY_RUN: true
         DEFAULT_BUMP: patch
+        
+    - name: Push tag
+      uses: anothrNick/github-tag-action@1.36.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+        CUSTOM_TAG: ${{ steps.new_tag.outputs.new_tag }}
 
     - name: Version
       run: |
@@ -40,9 +46,3 @@ jobs:
       run: npm publish
       env: 
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    # - name: Push tag
-    #   uses: anothrNick/github-tag-action@1.36.0
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
-    #     CUSTOM_TAG: ${{ steps.new_tag.outputs.new_tag }}

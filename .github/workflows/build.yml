@@ -62,7 +62,11 @@ jobs:
       with:
         name: artifact
 
-    - run: ls
+    - name: Publish
+      run: npm publish *.tgz --tag beta
+      env: 
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
   prod:
     needs: beta

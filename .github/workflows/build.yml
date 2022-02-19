@@ -78,7 +78,7 @@ jobs:
 
 
   prod:
-    needs: beta
+    needs: [build, beta]
     runs-on: ubuntu-latest
     environment: prod
     steps:

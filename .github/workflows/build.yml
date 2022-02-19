@@ -42,7 +42,7 @@ jobs:
       run: |
         git config --global user.name "Test"
         git config --global user.email "test@gmail.com"
-        npm version --from-git
+        npm version from-git
 
     - name: Publish
       run: npm publish

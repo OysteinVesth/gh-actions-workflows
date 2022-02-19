@@ -36,6 +36,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
         CUSTOM_TAG: ${{ steps.new_tag.outputs.new_tag }}
 
+    - uses: actions/checkout@v2
+
     - name: Version
       run: |
         git config --global user.name "Test"

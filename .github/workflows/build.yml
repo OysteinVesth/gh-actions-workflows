@@ -17,7 +17,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     outputs:
-      tag: steps.new_tag.outputs.new_tag
+      tag: ${{ steps.new_tag.outputs.new_tag }}
     steps:
     - uses: actions/checkout@v2
 
@@ -89,7 +89,7 @@ jobs:
       with:
         node-version: 16
         registry-url: https://npm.pkg.github.com
-        
+
     - name: Promote
       run: |
         npm dist-tag add ${{ env.PACKAGE_NAME }}@$(echo ${{ needs.build.outputs.tag }} | sed -e s/v//) latest

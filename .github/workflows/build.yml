@@ -16,6 +16,8 @@ jobs:
       packages: write
       contents: read
     runs-on: ubuntu-latest
+    outputs:
+      tag: steps.new_tag.outputs.new_tag
     steps:
     - uses: actions/checkout@v2
 
@@ -50,9 +52,23 @@ jobs:
       run: npm publish --tag beta
       env: 
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: my-artifact
+        path: .
+
+
+  beta:
+    needs: build
+
+  prod:
+    needs: beta
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
     - name: Promote
       run: |
-        npm dist-tag add ${{ env.PACKAGE_NAME }}@$(echo ${{ steps.new_tag.outputs.new_tag }} | sed -e s/v//) latest
+        npm dist-tag add ${{ env.PACKAGE_NAME }}@$(echo ${{ needs.build.outputs.tag }} | sed -e s/v//) latest
       env: 
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

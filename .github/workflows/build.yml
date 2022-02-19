@@ -62,7 +62,7 @@ jobs:
       with:
         name: artifact
 
-    - run: ls -R
+    - run: ls
 
   prod:
     needs: beta

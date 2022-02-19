@@ -52,6 +52,8 @@ jobs:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: Promote
-      run: npm dist-tag add ${{ env.PACKAGE_NAME }}@${{ steps.new_tag.outputs.new_tag }}
+      run: |
+        npm dist-tag rm ${{ env.PACKAGE_NAME }}
+        npm dist-tag add ${{ env.PACKAGE_NAME }}@${{ steps.new_tag.outputs.new_tag }} latest
       env: 
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

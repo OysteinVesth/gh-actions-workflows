@@ -43,6 +43,6 @@ jobs:
         npm --no-git-tag-version version from-git
 
     - name: Publish
-      run: npm publish
+      run: npm publish --tag beta
       env: 
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

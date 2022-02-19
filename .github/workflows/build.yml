@@ -81,7 +81,15 @@ jobs:
     needs: [build, beta]
     runs-on: ubuntu-latest
     environment: prod
+    permissions:
+      packages: write
     steps:
+    - name: Setup
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+        registry-url: https://npm.pkg.github.com
+        
     - name: Promote
       run: |
         npm dist-tag add ${{ env.PACKAGE_NAME }}@$(echo ${{ needs.build.outputs.tag }} | sed -e s/v//) latest

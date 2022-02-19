@@ -48,19 +48,18 @@ jobs:
         git config --global user.email "test@gmail.com"
         npm --no-git-tag-version version from-git
 
-    - name: Publish
-      run: npm publish --tag beta
-      env: 
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Pack
+      run: npm pack
 
     - uses: actions/upload-artifact@v2
       with:
-        name: my-artifact
-        path: .
-
-
+        path: ./*.tgz
   beta:
     needs: build
+    runs-on: ubuntu-latest
+    steps:
+
+    - run: ls
 
   prod:
     needs: beta

@@ -9,7 +9,7 @@ on:
 
 env:
   PACKAGE_NAME: '@oysteinvesth/gh-actions-workflows'
-  MAIN_BRANCH: master
+  MAIN_BRANCH: main
   DEFAULT_BUMP: minor
   INITIAL_VERSION: v1.0.0
 

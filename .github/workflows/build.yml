@@ -29,7 +29,7 @@ jobs:
     - id: deploy_branch
       if: github.ref != format('refs/heads/{0}', env.MAIN_BRANCH)
       name: Deploy branch?
-      run: echo "::set-output name=deploy_branch::${{ contains(github.event.head_commit.message, '#deploy_branch') && 'true' || 'false' }}"
+      run: echo "::set-output name=deploy_branch::${{ contains(github.event.head_commit.message, '#deploy_branch') && github.ref != format('refs/heads/{0}', env.MAIN_BRANCH) && 'true' || 'false' }}"
 
     - id: main_branch
       if: github.ref == format('refs/heads/{0}', env.MAIN_BRANCH)
@@ -55,20 +55,22 @@ jobs:
         DRY_RUN: true
         DEFAULT_BUMP: ${{ env.DEFAULT_BUMP }}
         RELEASE_BRANCHES: ${{ env.MAIN_BRANCH }}
+        PRERELEASE_SUFFIX: ${{ steps.branch_tag.outputs.suffix }}
         
     - name: Push tag
-      if: github.ref == format('refs/heads/{0}', env.MAIN_BRANCH)
+      if: github.ref == format('refs/heads/{0}', env.MAIN_BRANCH) || steps.deploy_branch.outputs.deploy_branch == 'true'
       uses: anothrNick/github-tag-action@1.36.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
         CUSTOM_TAG: ${{ steps.new_tag.outputs.new_tag }}
 
     - name: Version
+      if: github.ref == format('refs/heads/{0}', env.MAIN_BRANCH) || steps.deploy_branch.outputs.deploy_branch == 'true'
       run: npm --no-git-tag-version version from-git
 
     - name: Version prerelease
-      if: steps.deploy_branch.outputs.deploy_branch
-      run: npm --no-git-tag-version version prerelease --preid=${{ steps.branch_tag.outputs.suffix }} --force
+      if: steps.deploy_branch.outputs.deploy_branch == 'true'
+      run: npm --no-git-tag-version version prerelease --preid=${{ steps.branch_tag.outputs.suffix }}.${{ github.run_number }} --force
 
     - name: Pack
       run: npm pack

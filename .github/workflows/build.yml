@@ -66,7 +66,7 @@ jobs:
 
     - name: Version
       if: github.ref == format('refs/heads/{0}', env.MAIN_BRANCH) || steps.deploy_branch.outputs.deploy_branch == 'true'
-      run: npm --no-git-tag-version version from-git
+      run: npm --no-git-tag-version version from-git --preid ${{ steps.branch_tag.outputs.suffix }}
 
     # - name: Version prerelease
     #   if: steps.deploy_branch.outputs.deploy_branch == 'true'

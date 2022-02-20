@@ -20,7 +20,7 @@ jobs:
       env:
         RELEASE_CHANNEL_BASE_URI: 'https://testing.com'
         TFSO_MODULE: 'product'
-        BRANCH: steps.branch.outputs.clean_title
+        BRANCH: ${{ steps.branch.outputs.clean_title }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         script: |

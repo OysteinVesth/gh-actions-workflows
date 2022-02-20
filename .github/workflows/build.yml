@@ -43,10 +43,7 @@ jobs:
         CUSTOM_TAG: ${{ steps.new_tag.outputs.new_tag }}
 
     - name: Version
-      run: |
-        git config --global user.name "Test"
-        git config --global user.email "test@gmail.com"
-        npm --no-git-tag-version version from-git
+      run: npm --no-git-tag-version version from-git
 
     - name: Pack
       run: npm pack

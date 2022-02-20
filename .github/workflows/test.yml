@@ -1,0 +1,28 @@
+name: Build
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  build:
+    permissions:
+      packages: write
+      contents: read
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.new_tag.outputs.new_tag }}
+    steps:
+    - uses: actions/github-script@v6
+      with:
+        script: |
+          console.log(github, context)
+    # - uses: actions/github-script@v6
+    #   with:
+    #     script: |
+    #       github.rest.issues.createComment({
+    #         issue_number: context.issue.number,
+    #         owner: context.repo.owner,
+    #         repo: context.repo.repo,
+    #         body: '👋 Thanks for reporting!'
+    #       })

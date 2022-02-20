@@ -1,8 +1,8 @@
-name: Comment PR
+name: SemVer Title Checker
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize]
 
 jobs:
   build:
@@ -11,24 +11,14 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - name: Clean branch name
-      if: github.ref != format('refs/heads/{0}', env.MAIN_BRANCH)
-      id: branch
-      run: echo "::set-output name=clean_title::$(echo ${{ github.head_ref }} | sed 's/[^a-zA-Z0-9]/-/g')"
 
     - uses: actions/github-script@v6
-      env:
-        RELEASE_CHANNEL_BASE_URI: 'https://testing.com'
-        TFSO_MODULE: 'product'
-        BRANCH: ${{ steps.branch.outputs.clean_title }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      name: Check title
       with:
         script: |
-          const { RELEASE_CHANNEL_BASE_URI, TFSO_MODULE, BRANCH } = process.env
-          github.rest.issues.createComment({
-            issue_number: context.payload.pull_request.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: `#### Release channel link 👇 
-            #### ${RELEASE_CHANNEL_BASE_URI}/modules/${TFSO_MODULE}?channel=${BRANCH}`
-          })
+          const title = github.context.payload.pull_request.title
+          const semverTags = [ '#patch', '#minor', '#major', '#none' ]
+          if (!semverTags.some(tag => title.endsWith(tag))) {
+            core.setFailed(`PR title must end with one of the following semver tags: ${semverTags.join(', ')}`)
+          }
+          

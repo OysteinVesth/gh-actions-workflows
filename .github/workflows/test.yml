@@ -16,7 +16,7 @@ jobs:
       name: Check title
       with:
         script: |
-          const title = github.context.payload.pull_request.title
+          const title = context.payload.pull_request.title
           const semverTags = [ '#patch', '#minor', '#major', '#none' ]
           if (!semverTags.some(tag => title.endsWith(tag))) {
             core.setFailed(`PR title must end with one of the following semver tags: ${semverTags.join(', ')}`)

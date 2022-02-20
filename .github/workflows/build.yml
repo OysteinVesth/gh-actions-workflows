@@ -29,7 +29,7 @@ jobs:
     - id: deploy_branch
       if: github.ref != format('refs/heads/{0}', env.MAIN_BRANCH)
       name: Deploy branch?
-      run: echo "::set-output name=deploy_branch::${{ contains(github.event.head_commit.message, '#deploy_branch') && ${{ github.ref != format('refs/heads/{0}', env.MAIN_BRANCH) }} && 'true' || 'false' }}"
+      run: echo "::set-output name=deploy_branch::${{ contains(github.event.head_commit.message, '#deploy_branch') && github.ref != format('refs/heads/{0}', env.MAIN_BRANCH) && 'true' || 'false' }}"
 
     - id: main_branch
       if: github.ref == format('refs/heads/{0}', env.MAIN_BRANCH)

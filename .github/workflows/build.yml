@@ -9,6 +9,9 @@ on:
 
 env:
   PACKAGE_NAME: '@oysteinvesth/gh-actions-workflows'
+  MAIN_BRANCH: master
+  DEFAULT_BUMP: minor
+  INITIAL_VERSION: v1.0.0
 
 jobs:
   build:
@@ -17,9 +20,20 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     outputs:
+      deploy_branch: ${{ steps.deploy_branch.outputs.deploy_branch }}
       tag: ${{ steps.new_tag.outputs.new_tag }}
     steps:
     - uses: actions/checkout@v2
+
+    - id: deploy_branch
+      if: github.ref != format('refs/heads/{0}', env.MAIN_BRANCH)
+      name: Deploy branch?
+      run: echo "::set-output name=deploy_branch::${{ contains(github.event.head_commit.message, '#deploy_branch') && 'true' || 'false' }}"
+
+    - name: Create branch suffix
+      if: github.ref != format('refs/heads/{0}', env.MAIN_BRANCH)
+      id: branch_tag
+      run: echo "::set-output name=suffix::$(echo ${{ github.ref_name }} | sed 's/[^a-zA-Z0-9]/-/g')"
 
     - name: Setup
       uses: actions/setup-node@v2
@@ -34,19 +48,22 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         WITH_V: true
         DRY_RUN: true
-        DEFAULT_BUMP: patch
+        DEFAULT_BUMP: ${{ env.DEFAULT_BUMP }}
+        RELEASE_BRANCHES: ${{ env.MAIN_BRANCH }}
         
     - name: Push tag
+      if: github.ref == format('refs/heads/{0}', env.MAIN_BRANCH)
       uses: anothrNick/github-tag-action@1.36.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
         CUSTOM_TAG: ${{ steps.new_tag.outputs.new_tag }}
 
     - name: Version
-      run: |
-        git config --global user.name "Test"
-        git config --global user.email "test@gmail.com"
-        npm --no-git-tag-version version from-git
+      run: npm --no-git-tag-version version from-git
+
+    - name: Version prerelease
+      if: steps.deploy_branch.outputs.deploy_branch
+      run: npm --no-git-tag-version version prerelease --preid=${{ steps.branch_tag.outputs.suffix }} --force
 
     - name: Pack
       run: npm pack
@@ -56,6 +73,7 @@ jobs:
         path: ./*.tgz
   beta:
     needs: build
+    if: github.ref == format('refs/heads/{0}', env.MAIN_BRANCH) || needs.build.outputs.deploy_branch == 'true'
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -79,6 +97,7 @@ jobs:
 
   prod:
     needs: [build, beta]
+    if: github.ref == format('refs/heads/{0}', env.MAIN_BRANCH)
     runs-on: ubuntu-latest
     environment: prod
     permissions:

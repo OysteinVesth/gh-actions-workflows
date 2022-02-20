@@ -11,17 +11,23 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+    - name: Clean branch name
+      if: github.ref != format('refs/heads/{0}', env.MAIN_BRANCH)
+      id: branch
+      run: echo "::set-output name=clean_title::$(echo ${{ github.ref_name }} | sed 's/[^a-zA-Z0-9]/-/g')"
+
     - uses: actions/github-script@v6
       env:
         RELEASE_CHANNEL_BASE_URI: 'https://testing.com'
         TFSO_MODULE: 'product'
+        BRANCH: steps.branch.outputs.clean_title
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         script: |
-          const { RELEASE_CHANNEL_BASE_URI, TFSO_MODULE } = process.env
+          const { RELEASE_CHANNEL_BASE_URI, TFSO_MODULE, BRANCH } = process.env
           github.rest.issues.createComment({
             issue_number: context.payload.pull_request.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: `Remember to test the site! 👉 ${RELEASE_CHANNEL_BASE_URI}/modules/${TFSO_MODULE}`
+            body: `Remember to test the site! 👉 ${RELEASE_CHANNEL_BASE_URI}/modules/${TFSO_MODULE}??channel=${BRANCH}`
           })

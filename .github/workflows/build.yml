@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       deploy_branch: ${{ steps.deploy_branch.outputs.deploy_branch }}
+      is_main_branch: ${{ steps.main_branch.outputs.is_main }}
       tag: ${{ steps.new_tag.outputs.new_tag }}
     steps:
     - uses: actions/checkout@v2
@@ -29,6 +30,10 @@ jobs:
       if: github.ref != format('refs/heads/{0}', env.MAIN_BRANCH)
       name: Deploy branch?
       run: echo "::set-output name=deploy_branch::${{ contains(github.event.head_commit.message, '#deploy_branch') && 'true' || 'false' }}"
+
+    - id: main_branch
+      if: github.ref == format('refs/heads/{0}', env.MAIN_BRANCH)
+      run: echo "::set-output name=is_main::${{ 'true' }}"
 
     - name: Create branch suffix
       if: github.ref != format('refs/heads/{0}', env.MAIN_BRANCH)
@@ -71,9 +76,33 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         path: ./*.tgz
+        
+  beta_branch:
+    needs: build
+    if: needs.build.outputs.deploy_branch == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+
+    steps:
+    - name: Setup
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+        registry-url: https://npm.pkg.github.com
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: artifact
+
+    - name: Publish
+      run: npm publish *.tgz --tag beta
+      env: 
+        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   beta:
     needs: build
-    if: github.ref == format('refs/heads/{0}', env.MAIN_BRANCH) || needs.build.outputs.deploy_branch == 'true'
+    if: needs.build.outputs.is_main_branch == 'true'
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -97,8 +126,8 @@ jobs:
 
   prod:
     needs: [build, beta]
-    if: github.ref == format('refs/heads/{0}', env.MAIN_BRANCH)
     runs-on: ubuntu-latest
+    if: needs.build.outputs.is_main_branch == 'true'
     environment: prod
     permissions:
       packages: write

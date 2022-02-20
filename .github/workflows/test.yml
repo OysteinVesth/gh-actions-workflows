@@ -11,11 +11,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - run: echo ${{ github.ref_name }}
     - name: Clean branch name
       if: github.ref != format('refs/heads/{0}', env.MAIN_BRANCH)
       id: branch
-      run: echo "::set-output name=clean_title::$(echo ${{ github.ref_name }} | sed 's/[^a-zA-Z0-9]/-/g')"
+      run: echo "::set-output name=clean_title::$(echo ${{ github.head_ref }} | sed 's/[^a-zA-Z0-9]/-/g')"
 
     - uses: actions/github-script@v6
       env:

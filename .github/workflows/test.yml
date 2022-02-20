@@ -1,4 +1,4 @@
-name: Build
+name: Comment PR
 
 on:
   pull_request:
@@ -13,10 +13,11 @@ jobs:
     outputs:
       tag: ${{ steps.new_tag.outputs.new_tag }}
     steps:
-    - uses: actions/github-script@v6
-      with:
-        script: |
-          console.log(github, context)
+    - run: echo ${{ github.event.number }}
+    # - uses: actions/github-script@v6
+    #   with:
+    #     script: |
+    #       console.log(github.event.number)
     # - uses: actions/github-script@v6
     #   with:
     #     script: |

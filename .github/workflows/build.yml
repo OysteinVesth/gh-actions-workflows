@@ -70,7 +70,7 @@ jobs:
 
     - name: Version prerelease
       if: steps.deploy_branch.outputs.deploy_branch == 'true'
-      run: npm --no-git-tag-version version prerelease --preid=${{ steps.branch_tag.outputs.suffix }} --force
+      run: npm --no-git-tag-version version prerelease --preid=${{ steps.branch_tag.outputs.suffix }}.${{ github.run_number }} --force
 
     - name: Pack
       run: npm pack

@@ -66,11 +66,11 @@ jobs:
 
     - name: Version
       if: github.ref == format('refs/heads/{0}', env.MAIN_BRANCH) || steps.deploy_branch.outputs.deploy_branch == 'true'
-      run: npm --no-git-tag-version version from-git --preid ${{ steps.branch_tag.outputs.suffix }}
+      run: npm --no-git-tag-version version from-git
 
-    # - name: Version prerelease
-    #   if: steps.deploy_branch.outputs.deploy_branch == 'true'
-    #   run: npm --no-git-tag-version version prerelease --preid=${{ steps.branch_tag.outputs.suffix }} --force
+    - name: Version prerelease
+      if: steps.deploy_branch.outputs.deploy_branch == 'true'
+      run: npm --no-git-tag-version version prerelease --preid=${{ steps.branch_tag.outputs.suffix }} --force
 
     - name: Pack
       run: npm pack
